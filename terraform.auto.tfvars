@@ -40,4 +40,3 @@ gke_node_sva_roles = {
 }
 
 
-
