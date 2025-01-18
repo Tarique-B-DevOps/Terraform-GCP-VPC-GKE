@@ -9,8 +9,12 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BACKEND_CONFIG', defaultValue: 'remote-generic.hcl', description: 'Optional: Specify backend config file for Terraform initialization. Example. remote-staging.hcl or gcs-staging.hcl')
-        string(name: 'TF_VAR_FILE', defaultValue: 'generic.tfvars', description: 'Optional: Specify the Terraform variable file (e.g., generic.tfvars).')
+        choice(name: 'BACKEND_TYPE', choices: ['remote', 's3', 'gcs', 'azurerm'], description: 'Choose the backend type for Terraform initialization')
+
+        choice(name: 'HCP_EXEC_MODE', choices: ['local', 'remote'], description: 'Choose the Terraform Cloud workspace execution mode')
+
+        string(name: 'BACKEND_CONFIG', defaultValue: 'remote-generic.hcl', description: 'Specify backend config file for Terraform initialization (e.g., remote-staging.hcl or gcs-staging.hcl)')
+        string(name: 'TF_VAR_FILE', defaultValue: 'generic.tfvars', description: 'Specify the Terraform variable file (e.g., generic.tfvars).')
         booleanParam(name: 'DESTROY_TERRAFORM', defaultValue: false, description: 'Check to destroy resources instead of applying.')
     }
 
@@ -20,6 +24,21 @@ pipeline {
                 script {
                     if (!params.BACKEND_CONFIG || !params.TF_VAR_FILE) {
                         error "Both BACKEND_CONFIG and TF_VAR_FILE must be provided to proceed."
+                    }
+
+                    if (params.BACKEND_TYPE != 'remote' && params.HCP_EXEC_MODE == 'remote') {
+                        error "This backend type only supports 'local' execution mode. Aborting pipeline."
+                    }
+
+                    if (params.BACKEND_TYPE == 'remote' && params.HCP_EXEC_MODE == 'remote') {
+                        def autoTfvarsFiles = sh(script: 'ls *.auto.tfvars', returnStatus: true)
+                        if (autoTfvarsFiles != 0) {  // If no *.auto.tfvars files exist
+                            error "Terraform 'remote' backend and 'remote' execution mode require '*.auto.tfvars' files. Aborting pipeline."
+                        }
+
+                        if (params.TF_VAR_FILE) {
+                            error "Terraform 'remote' backend and 'remote' execution mode do not support providing variables via -var-file. Aborting pipeline."
+                        }
                     }
                 }
             }
@@ -43,7 +62,7 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}") {
-                        def tfVarFile = params.TF_VAR_FILE ? "-var-file=${params.TF_VAR_FILE}" : ""
+                        def tfVarFile = (params.BACKEND_TYPE != 'remote' || params.HCP_EXEC_MODE != 'remote') ? "-var-file=${params.TF_VAR_FILE}" : ""
                         sh "terraform plan ${tfVarFile}"
                     }
                 }
@@ -52,12 +71,12 @@ pipeline {
 
         stage('Terraform Apply') {
             when {
-                expression { return !params.DESTROY_TERRAFORM }  
+                expression { return !params.DESTROY_TERRAFORM }
             }
             steps {
                 script {
                     dir("${WORKSPACE}") {
-                        def tfVarFile = params.TF_VAR_FILE ? "-var-file=${params.TF_VAR_FILE}" : ""
+                        def tfVarFile = (params.BACKEND_TYPE != 'remote' || params.HCP_EXEC_MODE != 'remote') ? "-var-file=${params.TF_VAR_FILE}" : ""
                         echo "Applying Terraform plan..."
                         sh "terraform apply -auto-approve ${tfVarFile}"
                     }
@@ -72,7 +91,7 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}") {
-                        def tfVarFile = params.TF_VAR_FILE ? "-var-file=${params.TF_VAR_FILE}" : ""
+                        def tfVarFile = (params.BACKEND_TYPE != 'remote' || params.HCP_EXEC_MODE != 'remote') ? "-var-file=${params.TF_VAR_FILE}" : ""
                         echo "Destroying Terraform resources..."
                         sh "terraform destroy -auto-approve ${tfVarFile}"
                     }
