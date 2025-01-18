@@ -9,7 +9,7 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BACKEND_CONFIG', defaultValue: 'remote-staging.hcl', description: 'Optional: Specify backend config file for Terraform initialization. Example. remote-staging.hcl or gcs-staging.hcl')
+        string(name: 'BACKEND_CONFIG', defaultValue: 'remote-generic.hcl', description: 'Optional: Specify backend config file for Terraform initialization. Example. remote-staging.hcl or gcs-staging.hcl')
         string(name: 'TF_VAR_FILE', defaultValue: 'generic.tfvars', description: 'Optional: Specify the Terraform variable file (e.g., generic.tfvars).')
         booleanParam(name: 'DESTROY_TERRAFORM', defaultValue: false, description: 'Check to destroy resources instead of applying.')
     }
