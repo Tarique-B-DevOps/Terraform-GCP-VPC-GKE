@@ -30,14 +30,16 @@ pipeline {
                         error "This backend type only supports 'local' execution mode. Aborting pipeline."
                     }
 
-                    if (params.BACKEND_TYPE == 'remote' && params.HCP_EXEC_MODE == 'remote') {
-                        def autoTfvarsFiles = sh(script: 'ls *.auto.tfvars', returnStatus: true)
-                        if (autoTfvarsFiles != 0) {  // If no *.auto.tfvars files exist
-                            error "Terraform 'remote' backend and 'remote' execution mode require '*.auto.tfvars' files. Aborting pipeline."
-                        }
+                    if (params.BACKEND_TYPE == 'remote') {
+                        if (params.HCP_EXEC_MODE == 'remote') {
+                            def autoTfvarsFiles = sh(script: 'ls *.auto.tfvars', returnStatus: true)
+                            if (autoTfvarsFiles != 0) {  // If no *.auto.tfvars files exist
+                                error "Terraform 'remote' backend and 'remote' execution mode require '*.auto.tfvars' files. Aborting pipeline."
+                            }
 
-                        if (params.TF_VAR_FILE) {
-                            error "Terraform 'remote' backend and 'remote' execution mode do not support providing variables via -var-file. Aborting pipeline."
+                            if (params.TF_VAR_FILE) {
+                                error "Terraform 'remote' backend and 'remote' execution mode do not support providing variables via -var-file. Aborting pipeline."
+                            }
                         }
                     }
                 }
