@@ -10,15 +10,25 @@ pipeline {
 
     parameters {
         string(name: 'BACKEND_CONFIG', defaultValue: 'remote-staging.hcl', description: 'Optional: Specify backend config file for Terraform initialization. Example. remote-staging.hcl or gcs-staging.hcl')
+        string(name: 'TF_VAR_FILE', defaultValue: 'generic.tfvars', description: 'Optional: Specify the Terraform variable file (e.g., generic.tfvars).')
         booleanParam(name: 'DESTROY_TERRAFORM', defaultValue: false, description: 'Check to destroy resources instead of applying.')
     }
 
     stages {
+        stage('Check Mandatory Parameters') {
+            steps {
+                script {
+                    if (!params.BACKEND_CONFIG || !params.TF_VAR_FILE) {
+                        error "Both BACKEND_CONFIG and TF_VAR_FILE must be provided to proceed."
+                    }
+                }
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 script {
                     dir("${WORKSPACE}") {
-                        // Check if BACKEND_CONFIG is provided, and use it if available
                         if (params.BACKEND_CONFIG) {
                             sh "terraform init -backend-config='${TF_BACKEND_FILES_DIR}/${params.BACKEND_CONFIG}'"
                         } else {
@@ -33,7 +43,8 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}") {
-                        sh 'terraform plan'
+                        def tfVarFile = params.TF_VAR_FILE ? "-var-file=${params.TF_VAR_FILE}" : ""
+                        sh "terraform plan ${tfVarFile}"
                     }
                 }
             }
@@ -46,8 +57,9 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}") {
+                        def tfVarFile = params.TF_VAR_FILE ? "-var-file=${params.TF_VAR_FILE}" : ""
                         echo "Applying Terraform plan..."
-                        sh 'terraform apply -auto-approve'
+                        sh "terraform apply -auto-approve ${tfVarFile}"
                     }
                 }
             }
@@ -60,8 +72,9 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}") {
+                        def tfVarFile = params.TF_VAR_FILE ? "-var-file=${params.TF_VAR_FILE}" : ""
                         echo "Destroying Terraform resources..."
-                        sh 'terraform destroy -auto-approve'
+                        sh "terraform destroy -auto-approve ${tfVarFile}"
                     }
                 }
             }
