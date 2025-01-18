@@ -22,8 +22,10 @@ pipeline {
         stage('Check Mandatory Parameters') {
             steps {
                 script {
-                    if (!params.BACKEND_CONFIG || !params.TF_VAR_FILE) {
-                        error "Both BACKEND_CONFIG and TF_VAR_FILE must be provided to proceed."
+                    if (!(params.BACKEND_TYPE == 'remote' && params.HCP_EXEC_MODE == 'remote')) {
+                        if (!params.BACKEND_CONFIG || !params.TF_VAR_FILE) {
+                            error "Both BACKEND_CONFIG and TF_VAR_FILE must be provided to proceed."
+                        }
                     }
 
                     if (params.BACKEND_TYPE != 'remote' && params.HCP_EXEC_MODE == 'remote') {
