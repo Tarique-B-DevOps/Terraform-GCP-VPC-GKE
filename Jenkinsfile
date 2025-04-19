@@ -104,4 +104,25 @@ pipeline {
             }
         }
     }
+
+     post {
+        always {
+            slackSend color: "#FFFF00", message: """Terraform run started: ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)
+            
+            Project ID: ${env.TF_VAR_project_id}
+            Backend Type: ${params.BACKEND_TYPE}
+            Execution Mode: ${params.HCP_EXEC_MODE}
+            Backend Config: ${params.BACKEND_CONFIG}
+            Variables File: ${params.TF_VAR_FILE}
+            Terraform Log Level: ${env.TF_LOG}
+            """
+        }
+        success {
+            slackSend color: "#00FF00", message: "Terraform apply/destroy completed successfully - Job: ${env.JOB_NAME} - Build: ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        failure {
+            slackSend failOnError: true, color: "#FF0000", message: "Terraform apply/destroy failed - Job: ${env.JOB_NAME} - Build: ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+    }
+
 }
