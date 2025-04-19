@@ -2,9 +2,10 @@ pipeline {
     agent { label 'BUILD_STATION' }
 
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-devops-proj-file')
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-project-staging-sva')
         TF_TOKEN_app_terraform_io = credentials('terraform-cloud-token')
-        TF_VAR_project_id = "${env.GCP_PROJECT_ID}" 
+        TF_VAR_project_id = "${env.GCP_PROJECT_ID}"
+        TF_LOG = "${env.TF_LOG_LEVEL}"
         TF_BACKEND_FILES_DIR = "backend-configs"
     }
 

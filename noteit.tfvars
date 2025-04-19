@@ -7,7 +7,6 @@ tags = {
 }
 
 #VPC Values
-project_id = "staging-441107"
 region     = "us-central1"
 vpc_name   = "noteit"
 subnet_details = {
