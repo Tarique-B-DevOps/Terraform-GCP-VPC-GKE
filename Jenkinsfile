@@ -114,6 +114,7 @@ pipeline {
             Execution Mode: ${params.HCP_EXEC_MODE}
             Backend Config: ${params.BACKEND_CONFIG}
             Variables File: ${params.TF_VAR_FILE}
+            Destroy Resources: ${params.DESTROY_TERRAFORM}
             Terraform Log Level: ${env.TF_LOG}
             """
         }
