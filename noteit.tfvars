@@ -7,8 +7,8 @@ tags = {
 }
 
 #VPC Values
-region     = "us-central1"
-vpc_name   = "noteit"
+region   = "us-central1"
+vpc_name = "noteit"
 subnet_details = {
   subnet_1 = {
     name = "noteit-subnet-1"
@@ -34,6 +34,7 @@ gke_ip_allocation_cidrs = {
   "service" = "/20"
 }
 gke_node_sva_roles = {
-  "storage"  = "storage.objectViewer"
-  "artifact" = "artifactregistry.reader"
+  "storage"    = "storage.objectViewer"
+  "artifact"   = "artifactregistry.reader"
+  "operations" = "container.defaultNodeServiceAccount"
 }
