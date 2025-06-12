@@ -38,6 +38,8 @@ gke_node_sva_roles = {
   "artifact"   = "artifactregistry.reader"
   "operations" = "container.defaultNodeServiceAccount"
 }
+enable_network_policy   = true
+network_policy_provider = "CALICO"
 
 
 

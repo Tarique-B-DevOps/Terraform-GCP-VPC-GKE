@@ -80,3 +80,14 @@ variable "gke_node_sva_roles" {
   description = "Required roles for Node Pool"
   type        = map(string)
 }
+
+variable "enable_network_policy" {
+  description = "Enable network policy for GKE cluster"
+  type        = bool
+}
+
+variable "network_policy_provider" {
+  description = "Network policy provider for GKE cluster"
+  type        = string
+
+}

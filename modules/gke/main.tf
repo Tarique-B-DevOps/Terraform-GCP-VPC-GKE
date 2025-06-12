@@ -25,6 +25,11 @@ resource "google_container_cluster" "cluster" {
     cluster_ipv4_cidr_block  = var.gke_ip_allocation_cidrs["cluster"]
     services_ipv4_cidr_block = var.gke_ip_allocation_cidrs["service"]
   }
+
+  network_policy {
+    enabled  = var.enable_network_policy
+    provider = var.network_policy_provider
+  }
 }
 
 resource "google_container_node_pool" "nodes" {

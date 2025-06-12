@@ -56,3 +56,15 @@ variable "gke_node_sva_roles" {
   type        = map(string)
 
 }
+
+variable "enable_network_policy" {
+  description = "Specify whether to enable network policy for the GKE cluster"
+  type        = bool
+  default     = false
+}
+
+variable "network_policy_provider" {
+  description = "The network policy provider to use for the GKE cluster"
+  type        = string
+
+}
