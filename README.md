@@ -20,13 +20,13 @@ This repository provisions infrastructure on **Google Cloud Platform (GCP)** usi
 2. Change into the project directory  
 
 3. Initialize Terraform with a backend config  
-   terraform init -backend-config=<backend-config-file>
+   terraform init -backend-config=`<path-to-backend-config-file>`
 
 4. Preview infrastructure changes  
-   terraform plan -var-file=<var-file>
+   terraform plan -var-file=`<path-to-var-file>`
 
 5. Apply the configuration  
-   terraform apply -var-file=<var-file>
+   terraform apply -var-file=`<path-to-var-file>`
 
 ---
 
@@ -50,3 +50,6 @@ This project includes a Jenkinsfile with parameterized deployment options:
    - TF_VAR_FILE (e.g., gcp.tfvars)
    - DESTROY_TERRAFORM (true/false)
 4. Trigger the pipeline to deploy or destroy GCP infrastructure
+
+
+![Image](https://github.com/user-attachments/assets/18a3728a-8beb-4185-a7f7-ca566e0867ea)
