@@ -1,2 +1,52 @@
-# terraform-gcp-vpc-gke
-Terraform modules for provisioning VPCs and Google Kubernetes Engine clusters on Google Cloud Platform.
+# Terraform GCP VPC & GKE
+
+This repository provisions infrastructure on **Google Cloud Platform (GCP)** using Terraform. It sets up a **Virtual Private Cloud (VPC)** and a **Google Kubernetes Engine (GKE)** cluster with modular, parameterized support and CI/CD automation via Jenkins.
+
+---
+
+## ⚙️ Features
+
+- Modular design with `vpc` and `gke` Terraform modules  
+- Supports multiple backend types: `remote`, `gcs`, `s3`, `azurerm`  
+- Jenkinsfile for automated provisioning and destruction  
+- Quick setup for repeatable infrastructure deployments on GCP
+
+---
+
+## 🚀 Quick Deployment Steps
+
+1. Clone the repository
+
+2. Change into the project directory  
+
+3. Initialize Terraform with a backend config  
+   terraform init -backend-config=<backend-config-file>
+
+4. Preview infrastructure changes  
+   terraform plan -var-file=<var-file>
+
+5. Apply the configuration  
+   terraform apply -var-file=<var-file>
+
+---
+
+## 🤖 Configure with Jenkins
+
+This project includes a Jenkinsfile with parameterized deployment options:
+
+- Select backend type: remote, gcs, s3, azurerm  
+- Choose execution mode: local or remote (Terraform Cloud)  
+- Input backend config and variable files  
+- Toggle destroy mode for cleanup
+
+### Jenkins Setup Steps
+
+1. Create a new Jenkins pipeline job  
+2. Point it to this GitHub repository  
+3. Configure the following parameters:
+   - BACKEND_TYPE (e.g., gcs)
+   - HCP_EXEC_MODE (e.g., local)
+   - BACKEND_CONFIG (e.g., gcs-staging.hcl)
+   - TF_VAR_FILE (e.g., gcp.tfvars)
+   - DESTROY_TERRAFORM (true/false)
+4. Trigger the pipeline to deploy or destroy GCP infrastructure
