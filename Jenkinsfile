@@ -15,7 +15,7 @@ pipeline {
         choice(name: 'HCP_EXEC_MODE', choices: ['local', 'remote'], description: 'Choose the Terraform Cloud workspace execution mode')
 
         string(name: 'BACKEND_CONFIG', defaultValue: 'remote-generic.hcl', description: 'Specify backend config file for Terraform initialization (e.g., remote-staging.hcl or gcs-staging.hcl)')
-        string(name: 'TF_VAR_FILE', defaultValue: 'generic.tfvars', description: 'Specify the Terraform variable file (e.g., generic.tfvars).')
+        string(name: 'TF_VAR_FILE', defaultValue: 'generic.auto.tfvars', description: 'Specify the Terraform variable file (e.g., generic.tfvars).')
         booleanParam(name: 'DESTROY_TERRAFORM', defaultValue: false, description: 'Check to destroy resources instead of applying.')
     }
 
