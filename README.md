@@ -75,12 +75,30 @@ This project includes a Jenkinsfile with parameterized deployment options:
 3. **All runs in this workspace will use the `GOOGLE_CREDENTIALS` environment variable to authenticate with Google Cloud Platform.**
 
 
-## Setting GKE Cluster Credentials for `kubectl`
+## Setting GKE Credentials for `kubectl`
 
-To configure `kubectl` for your GKE cluster, run:
+1. **Install GKE Auth Plugin:**
+   - Ubuntu/Debian:  
+     ```bash 
+     sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
+     ```
 
-```bash
-gcloud container clusters get-credentials <CLUSTER_NAME> \
-      --zone <ZONE> \
-      --project <PROJECT_ID>
-```
+   - RHEL/CentOS/Amazon Linux:
+     ```bash  
+     sudo yum install google-cloud-sdk-gke-gcloud-auth-plugin -y
+     ```
+
+2. **Configure `kubectl`:**
+   - Get the command from the `configure_kubeconfig` output
+
+     ```bash
+     terraform output -raw configure_kubeconfig
+     ```
+
+   - Or run the following by replacing with your actual values:
+
+     ```bash
+     gcloud container clusters get-credentials <CLUSTER_NAME> \
+            --zone <ZONE> \
+            --project <PROJECT_ID>
+     ```
