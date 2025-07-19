@@ -53,3 +53,23 @@ This project includes a Jenkinsfile with parameterized deployment options:
 
 
 ![Image](https://github.com/user-attachments/assets/18a3728a-8beb-4185-a7f7-ca566e0867ea)
+
+
+## Using Terraform Cloud as the Backend
+
+1. **Create an environment variable in your Terraform Cloud workspace:**
+
+   - **Name:** `GOOGLE_CREDENTIALS`
+   - **Value:** Paste your entire GCP JSON key file **without newline characters**.
+
+     To remove newlines from your JSON file, run:
+
+     ```
+     cat CREDENTIALS.json | tr -s '\n' ' '
+     ```
+
+   - **Mark the variable as Sensitive**
+
+2. **Save the variable.**
+
+3. **All runs in this workspace will use the `GOOGLE_CREDENTIALS` environment variable to authenticate with Google Cloud Platform.**
