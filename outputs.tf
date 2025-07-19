@@ -16,3 +16,8 @@ output "cluster_endpoint" {
   value = module.gke_cluster.cluster_endpoint
 
 }
+
+output "configure_kubeconfig" {
+  description = "gcloud command to configure kubeconfig for accessing the GKE cluster via kubectl"
+  value       = "gcloud container clusters get-credentials \"${module.gke_cluster.cluster_name}\" --zone \"${module.gke_cluster.cluster_location}\" --project \"${var.project_id}\""
+}
